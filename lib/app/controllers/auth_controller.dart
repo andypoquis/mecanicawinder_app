@@ -29,7 +29,7 @@ class AuthController extends GetxController {
 
   //Auth HTTP
 
-/*   void fetchAuth() async {
+  void fetchAuth() async {
     try {
       isLoading(true);
       var auth = await RemoteServices.fetchAuth(emailController.text,
@@ -42,32 +42,6 @@ class AuthController extends GetxController {
       }
     } finally {
       isLoading(false);
-    }
-  } */
-
-  void fetchAuth() async {
-    isLoading = true.obs;
-    try {
-      _timer = Timer(const Duration(milliseconds: 2500), () {
-        if ((emailController.text == 'andypoquis' ||
-                emailController.text == 'andypoquis@gmail.com') &&
-            (passwordController.text == '123456')) {
-          box.write('success', true);
-          incorrect(false);
-          Get.offAllNamed(Routes.MENU);
-        } else {
-          Fluttertoast.showToast(
-              msg: "Datos incorrectos",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: const Color(0xffF67878),
-              textColor: Colors.white,
-              fontSize: 16.0);
-        }
-      });
-    } finally {
-      isLoading = false.obs;
     }
   }
 

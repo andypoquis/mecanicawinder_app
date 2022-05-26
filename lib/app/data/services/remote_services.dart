@@ -41,7 +41,7 @@ class RemoteServices {
   static Future<Productlist?> fetchListProduct(String url, String token) async {
     Map<String, String> requestHeaders = {
       "Content-Type": "application/json; charset=utf-8",
-      // "Auorization": "Bearer $token"th
+      "Authorization": "Bearer $token"
     };
 
     var response = await client.get(Uri.parse(url), headers: requestHeaders);
@@ -50,6 +50,8 @@ class RemoteServices {
       var jsonString = response.body;
       return productlistFromJson(jsonString);
     } else {
+      print(response.statusCode);
+      print(response.body);
       return null;
     }
   }
@@ -57,13 +59,15 @@ class RemoteServices {
   static Future<Postlist?> fetchPosts(String url, String token) async {
     Map<String, String> requestHeaders = {
       "Content-Type": "application/json; charset=utf-8",
-      // "Authorization": "Bearer $token"
+      "Authorization": "Bearer $token"
     };
     var response = await client.get(Uri.parse(url), headers: requestHeaders);
     if (response.statusCode == 200) {
       var jsonString = response.body;
       return postlistFromJson(jsonString);
     } else {
+      print(response.statusCode);
+
       print(response.headers);
       return null;
     }

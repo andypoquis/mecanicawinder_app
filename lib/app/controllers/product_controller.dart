@@ -35,7 +35,8 @@ class ProductController extends GetxController {
   void fetchProductList() async {
     try {
       var product = await RemoteServices.fetchListProduct(
-          "http://34.133.92.25/api/products?populate=*", token.value);
+          "http://34.133.92.25/api/products?populate=*",
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjUyODIzNDg1LCJleHAiOjE2NTU0MTU0ODV9.s-Hpa1iwFA3mctGPlp9vaNN7VCSuB2r2JdkQ0Y4T1Cc");
       if (product != null) {
         productList(product.data);
       }

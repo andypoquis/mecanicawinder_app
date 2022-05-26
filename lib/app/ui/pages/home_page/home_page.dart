@@ -37,7 +37,7 @@ class HomePage extends GetView<HomeController> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
-          '¡Bienvenido!, Andrés',
+          '¡Bienvenido!',
           style: TextStyle(
               color: primaryTextColor,
               fontSize: 24,

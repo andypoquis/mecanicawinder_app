@@ -241,7 +241,7 @@ class ProductPage extends GetView<ProductController> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.black12),
-                child: const Center(child: Text('uwu')),
+                child: const Center(child: Text('')),
               ),
               spaceW(5),
               Container(
@@ -251,7 +251,7 @@ class ProductPage extends GetView<ProductController> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.black12),
-                child: const Center(child: Text('uwu2')),
+                child: const Center(child: Text('')),
               ),
             ],
           ),
