@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mecanicawinder/app/ui/theme/color.dart';
-import '../../../controllers/auth_controller.dart';
+import '../../../controllers/register_controller.dart';
 
-class AuthPage extends GetView<AuthController> {
+class RegisterPage extends GetView<RegisterController> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -11,26 +11,12 @@ class AuthPage extends GetView<AuthController> {
       child: Scaffold(
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
             children: [
-              /*   Center(
-                child: Image.asset(
-                  'assets/logo.png',
-                  height: screenSize.height * 0.15,
-                ),
-              ), */
               spaceH(screenSize.height * 0.05),
-              ElevatedButton(
-                  onPressed: () {},
-                  child: const Icon(Icons.arrow_back_ios_new)),
-              Expanded(
-                child: Container(),
-              ),
               spaceH(25),
               const Text(
-                'Bienvenido',
+                'Registrar',
                 style: TextStyle(
                     color: Color(0xff212529),
                     fontSize: 36,
@@ -44,9 +30,40 @@ class AuthPage extends GetView<AuthController> {
                     fontSize: 14,
                     fontWeight: FontWeight.w400),
               ),
-              Expanded(
-                child: Container(),
+              spaceH(25),
+              const Text(
+                'Nombre completo',
+                style: TextStyle(
+                    color: Color(0xff545E64),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400),
               ),
+              spaceH(10),
+              Container(
+                color: Colors.white,
+                child: TextField(
+                    controller: controller.nameController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration:
+                        const InputDecoration(border: OutlineInputBorder())),
+              ),
+              spaceH(20),
+              const Text(
+                'Nombre Usuario',
+                style: TextStyle(
+                    color: Color(0xff545E64),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400),
+              ),
+              spaceH(10),
+              Container(
+                color: Colors.white,
+                child: TextField(
+                    controller: controller.usernameController,
+                    decoration:
+                        const InputDecoration(border: OutlineInputBorder())),
+              ),
+              spaceH(20),
               const Text(
                 'Email',
                 style: TextStyle(
@@ -58,12 +75,12 @@ class AuthPage extends GetView<AuthController> {
               Container(
                 color: Colors.white,
                 child: TextField(
-                    controller: controller.emailController,
                     keyboardType: TextInputType.emailAddress,
+                    controller: controller.emailController,
                     decoration:
                         const InputDecoration(border: OutlineInputBorder())),
               ),
-              spaceH(20),
+              spaceH(10),
               const Text(
                 'Contraseña',
                 style: TextStyle(
@@ -80,32 +97,17 @@ class AuthPage extends GetView<AuthController> {
                     decoration:
                         const InputDecoration(border: OutlineInputBorder())),
               ),
-              spaceH(5),
-              SizedBox(
-                width: screenSize.width,
-                child: const Text(
-                  '¿Has olvidado tu contraseña?',
-                  style: TextStyle(
-                    color: Color(0xff545E64),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                  ),
-                  textAlign: TextAlign.right,
-                ),
-              ),
-              Expanded(
-                child: Container(),
-              ),
+              spaceH(50),
               SizedBox(
                 height: 45,
                 child: Obx(() => ElevatedButton(
                     onPressed: (!controller.isLoading.value)
-                        ? () => controller.fetchAuth()
+                        ? () => controller.fetchRegister()
                         : null,
                     child: Center(
                         child: (!controller.isLoading.value)
                             ? const Text(
-                                'Iniciar sesión',
+                                'Registrarse',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -115,28 +117,6 @@ class AuthPage extends GetView<AuthController> {
                               )))),
               ),
               spaceH(10),
-              Center(
-                  child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    '¿Aun no tienes una cuenta?',
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                  spaceW(5),
-                  GestureDetector(
-                    onTap: () => controller.navigationRegisterPage(),
-                    child: const Text(
-                      'Registrate',
-                      style: TextStyle(color: primaryTextColor),
-                    ),
-                  ),
-                ],
-              )),
-              Expanded(
-                child: Container(),
-              ),
             ],
           ),
         ),

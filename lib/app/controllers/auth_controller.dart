@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -14,7 +11,6 @@ class AuthController extends GetxController {
 
   RxBool isLoading = false.obs;
   RxBool success = false.obs;
-  Timer? _timer;
   RxBool incorrect = false.obs;
 
   TextEditingController emailController = TextEditingController();
@@ -47,5 +43,9 @@ class AuthController extends GetxController {
 
   navigationMenuPage() {
     Get.offAllNamed(Routes.MENU);
+  }
+
+  navigationRegisterPage() {
+    Get.toNamed(Routes.REGISTER);
   }
 }

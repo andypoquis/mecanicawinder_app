@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mecanicawinder/app/routes/app_pages.dart';
 import '../../../controllers/product_controller.dart';
 import '../../theme/color.dart';
 
@@ -27,7 +28,7 @@ class ProductPage extends GetView<ProductController> {
                   Stack(
                     children: [
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () => Get.toNamed(Routes.DETAILPRODUCT),
                           icon: const Icon(
                             Icons.shopping_cart,
                             color: primaryTextColor,
@@ -138,18 +139,42 @@ class ProductPage extends GetView<ProductController> {
                                                   ),
                                                 ),
                                                 Expanded(child: Container()),
-                                                Row(
-                                                  children: [
-                                                    const CircleAvatar(
-                                                      maxRadius: 7,
-                                                      backgroundColor:
-                                                          Color.fromARGB(255,
-                                                              41, 172, 108),
-                                                    ),
-                                                    spaceW(10),
-                                                    const Text('Disponible'),
-                                                  ],
-                                                ),
+                                                controller
+                                                            .productList[index]
+                                                            .attributes!
+                                                            .stock! >
+                                                        0
+                                                    ? Row(
+                                                        children: [
+                                                          const CircleAvatar(
+                                                            maxRadius: 7,
+                                                            backgroundColor:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    41,
+                                                                    172,
+                                                                    108),
+                                                          ),
+                                                          spaceW(10),
+                                                          const Text(
+                                                              'Disponible'),
+                                                        ],
+                                                      )
+                                                    : Row(
+                                                        children: [
+                                                          const CircleAvatar(
+                                                            maxRadius: 7,
+                                                            backgroundColor:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    172,
+                                                                    43,
+                                                                    41),
+                                                          ),
+                                                          spaceW(10),
+                                                          const Text('Agotado'),
+                                                        ],
+                                                      ),
                                                 spaceH(10),
                                               ],
                                             ),
@@ -163,6 +188,7 @@ class ProductPage extends GetView<ProductController> {
                                                       width: 1,
                                                     )),
                                                 onPressed: () {
+                                                  controller.amount(0);
                                                   Get.bottomSheet(
                                                       Container(
                                                           decoration: const BoxDecoration(
@@ -304,7 +330,9 @@ class ProductPage extends GetView<ProductController> {
             height: 40,
             width: double.maxFinite,
             child: ElevatedButton(
-              onPressed: (() {}),
+              onPressed: controller.productList[index].attributes!.stock! > 0
+                  ? () => controller.addProductshop(index)
+                  : null,
               child: const Text('Agregar'),
             ),
           )

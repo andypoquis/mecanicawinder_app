@@ -12,4 +12,5 @@ abstract class Routes {
   static const VALIDATEDOMAIN = '/validatedomain';
   static const DETAILPRODUCT = '/detailproduct';
   static const PROFILE_CLIENT = '/profileclient';
+  static const REGISTER = '/register';
 }

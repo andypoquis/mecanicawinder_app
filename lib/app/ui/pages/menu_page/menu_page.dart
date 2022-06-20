@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mecanicawinder/app/ui/pages/services_page/services_page.dart';
 import '../../../controllers/menu_controller.dart';
 import '../home_page/home_page.dart';
 import '../product_page/product_page.dart';
@@ -45,7 +46,7 @@ class MenuPage extends GetView<MenuController> {
         case 2:
           return ProductPage();
         default:
-          return Container();
+          return ServicesPage();
       }
     });
   }
