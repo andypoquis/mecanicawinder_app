@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart';
 import 'package:uuid/uuid.dart';
@@ -16,17 +15,19 @@ import '../data/services/remote_services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
-import 'package:async/async.dart';
-import 'dart:io';
 
 class ProductController extends GetxController {
   RxList<ProductlistDatum> productList = RxList<ProductlistDatum>();
   RxBool isLoading = false.obs;
   GetStorage box = GetStorage();
   RxString token = ''.obs;
+  RxInt idClient = 0.obs;
+
+  RxInt amountShoop = 0.obs;
 
   ScrollController sc = ScrollController();
+
+  RxDouble totalPrice = (0.0).obs;
 
   RxInt amount = 1.obs;
   addAmount() {
@@ -34,17 +35,22 @@ class ProductController extends GetxController {
   }
 
   reduceAmount() {
-    if (amount.value > 1) {
+    if (amount.value > 0) {
       amount.value--;
     }
   }
 
   addProductshop(int index) {
     productsShop.add({"product": productList[index], "amount": amount.value});
+    totalPrice.value += productList[index].attributes!.price! * amount.value;
+    amountShoop.value += 1;
     Get.back();
   }
 
   removeProductShop(int index) {
+    totalPrice.value -= productsShop[index]["product"].attributes!.price! *
+        productsShop[index]["amount"];
+    amountShoop.value -= 1;
     productsShop.removeAt(index);
   }
 
@@ -54,6 +60,8 @@ class ProductController extends GetxController {
   void onInit() async {
     await GetStorage.init('token');
     token(box.read('token'));
+    await GetStorage.init('id');
+    idClient(box.read('id'));
     fetchProductList();
     super.onInit();
   }
@@ -68,11 +76,17 @@ class ProductController extends GetxController {
     } finally {}
   }
 
-  void fetchVaucher(String code, int pdf) async {
+  void fetchVaucher(
+    String code,
+    int pdf,
+    String name,
+  ) async {
     try {
-      var product = await RemoteServices.fetchVaucher(
-          code, pdf, "http://34.133.92.25/api/vouchers", token.value);
+      var product = await RemoteServices.fetchVaucher(code, pdf,
+          "http://34.133.92.25/api/vouchers", idClient.value, token.value);
       if (product != null) {
+        productsShop([]);
+        amountShoop.value = 0;
         Get.back();
       }
     } finally {}
@@ -80,7 +94,11 @@ class ProductController extends GetxController {
 
   // ignore: use_function_type_syntax_for_parameters
   void pdfGenerater() async {
+    var uuid = const Uuid();
+    String namePDF = uuid.v4();
+
     final pdf = pw.Document();
+    const size = PdfPageFormat.a4;
     pdf.addPage(pw.Page(
         theme: pw.ThemeData.withFont(
           base: Font.ttf(await rootBundle.load("assets/OpenSans-Regular.ttf")),
@@ -91,15 +109,150 @@ class ProductController extends GetxController {
         ),
         pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
-          return pw.ListView.builder(
-              itemBuilder: ((context, index) => pw.Column(children: [
-                    pw.Text(
-                        "${productsShop[index]["product"].attributes!.name}")
-                  ])),
-              itemCount: productsShop.length); // Center
+          return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Row(children: [
+                  pw.Expanded(child: pw.Container()),
+                  pw.Text('Factura: $namePDF')
+                ]),
+                pw.Text('${DateTime.now()}'),
+                pw.Text('Mecanica Winder.',
+                    style: pw.TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        color: PdfColor.fromHex("#285EA7"))),
+                pw.SizedBox(height: 25),
+                pw.Text('Oficinas: ',
+                    style: pw.TextStyle(fontWeight: FontWeight.bold)),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  'Jr. Messones Muro 364 - Rioja: ',
+                ),
+                pw.SizedBox(height: 25),
+                pw.Text(
+                  '+51982687078',
+                ),
+                pw.SizedBox(height: 50),
+                pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.start,
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Column(
+                          mainAxisAlignment: pw.MainAxisAlignment.start,
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            pw.Container(
+                                width: size.width * 0.35,
+                                height: 35,
+                                decoration: pw.BoxDecoration(
+                                  color: PdfColor.fromHex("#285EA7"),
+                                ),
+                                child: pw.Center(
+                                  child: pw.Text('Productos',
+                                      style: pw.TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: PdfColor.fromHex("#FDFBFF"))),
+                                )),
+                            pw.Container(
+                                width: size.width * 0.35,
+                                child: pw.ListView.builder(
+                                    itemBuilder: ((context, index) => (index %
+                                                2 ==
+                                            0)
+                                        ? pw.Container(
+                                            height: 35,
+                                            width: size.width * 0.35,
+                                            child: pw.Text(
+                                                "${productsShop[index]["product"].attributes!.name}"))
+                                        : pw.Container(
+                                            height: 35,
+                                            width: size.width * 0.35,
+                                            color: PdfColor.fromHex("#E0E2EC"),
+                                            child: pw.Text(
+                                                "${productsShop[index]["product"].attributes!.name}"))),
+                                    itemCount: productsShop.length))
+                          ]),
+                      pw.Column(
+                          mainAxisAlignment: pw.MainAxisAlignment.start,
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            pw.Container(
+                                width: size.width * 0.22125,
+                                height: 35,
+                                decoration: pw.BoxDecoration(
+                                  color: PdfColor.fromHex("#285EA7"),
+                                ),
+                                child: pw.Center(
+                                  child: pw.Text('Precio unitario',
+                                      style: pw.TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: PdfColor.fromHex("#FDFBFF"))),
+                                )),
+                            pw.Container(
+                                width: size.width * 0.22125,
+                                child: pw.ListView.builder(
+                                    itemBuilder: ((context, index) => (index %
+                                                2 ==
+                                            0)
+                                        ? pw.Container(
+                                            height: 35,
+                                            width: size.width * 0.22125,
+                                            child: pw.Text(
+                                                "S/. ${productsShop[index]["product"].attributes!.price}"))
+                                        : pw.Container(
+                                            height: 35,
+                                            width: size.width * 0.35,
+                                            color: PdfColor.fromHex("#E0E2EC"),
+                                            child: pw.Text(
+                                                "S/. ${productsShop[index]["product"].attributes!.price}"))),
+                                    itemCount: productsShop.length))
+                          ]),
+                      pw.Column(
+                          mainAxisAlignment: pw.MainAxisAlignment.start,
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            pw.Container(
+                                width: size.width * 0.25,
+                                height: 35,
+                                decoration: pw.BoxDecoration(
+                                  color: PdfColor.fromHex("#285EA7"),
+                                ),
+                                child: pw.Center(
+                                  child: pw.Text('Cantidad',
+                                      style: pw.TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: PdfColor.fromHex("#FDFBFF"))),
+                                )),
+                            pw.Container(
+                                width: size.width * 0.25,
+                                child: pw.ListView.builder(
+                                    itemBuilder: ((context, index) => (index %
+                                                2 ==
+                                            0)
+                                        ? pw.Container(
+                                            width: size.width * 0.25,
+                                            height: 35,
+                                            child: pw.Text(
+                                                "${productsShop[index]["amount"]}"))
+                                        : pw.Container(
+                                            width: size.width * 0.25,
+                                            height: 35,
+                                            color: PdfColor.fromHex("#E0E2EC"),
+                                            child: pw.Text(
+                                                "${productsShop[index]["amount"]}"))),
+                                    itemCount: productsShop.length))
+                          ]),
+                    ]),
+                pw.Expanded(child: pw.Container()),
+                pw.Text('Total: S/ ${totalPrice.value.toStringAsFixed(2)}',
+                    style: pw.TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: PdfColor.fromHex("#285EA7"))),
+              ]); // Center
         }));
-    var uuid = const Uuid();
-    String namePDF = uuid.v4();
+
     final dir = await getApplicationDocumentsDirectory();
     final file = File('${dir.path}/$namePDF.pdf');
     await file.writeAsBytes(await pdf.save());
@@ -115,7 +268,22 @@ class ProductController extends GetxController {
     var response = await http.Response.fromStream(res);
     int idPDF = jsonDecode(response.body)[0]["id"];
 
-    fetchVaucher(namePDF, idPDF);
+    fetchVaucher(namePDF, idPDF, namePDF);
+  }
+
+  cellImpar(double width, double height, String color, String title) {
+    return pw.Container(
+        width: width,
+        height: 35,
+        decoration: pw.BoxDecoration(
+          color: PdfColor.fromHex(color),
+        ),
+        child: pw.Center(
+          child: pw.Text(title,
+              style: pw.TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: PdfColor.fromHex("#FDFBFF"))),
+        ));
   }
 
   Upload(File imageFile) async {}

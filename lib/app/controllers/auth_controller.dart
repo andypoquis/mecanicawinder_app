@@ -32,6 +32,7 @@ class AuthController extends GetxController {
           passwordController.text, "http://34.133.92.25/api/auth/local");
       if (auth != null) {
         box.write('token', auth.jwt);
+        box.write('id', auth.user!.id);
         box.write('success', true);
         incorrect(false);
         Get.offAllNamed(Routes.MENU);

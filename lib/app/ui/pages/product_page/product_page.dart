@@ -1,3 +1,5 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mecanicawinder/app/routes/app_pages.dart';
@@ -33,12 +35,12 @@ class ProductPage extends GetView<ProductController> {
                             Icons.shopping_cart,
                             color: primaryTextColor,
                           )),
-                      const CircleAvatar(
+                      CircleAvatar(
                         maxRadius: 10,
-                        child: Text(
-                          '2',
-                          style: TextStyle(fontSize: 10),
-                        ),
+                        child: Obx(() => Text(
+                              '${controller.amountShoop.value}',
+                              style: const TextStyle(fontSize: 10),
+                            )),
                       )
                     ],
                   ),
@@ -258,29 +260,6 @@ class ProductPage extends GetView<ProductController> {
           Text(
               'Nombre: ${controller.productList[index].attributes!.description}'),
           spaceH(25),
-          Row(
-            children: [
-              Container(
-                width: 75,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                height: 35,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.black12),
-                child: const Center(child: Text('')),
-              ),
-              spaceW(5),
-              Container(
-                width: 75,
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                height: 35,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.black12),
-                child: const Center(child: Text('')),
-              ),
-            ],
-          ),
           spaceH(25),
           const Text(
             'Cantidad:',
@@ -292,7 +271,7 @@ class ProductPage extends GetView<ProductController> {
               Obx((() => GestureDetector(
                     onTap: () => controller.reduceAmount(),
                     child: CircleAvatar(
-                      backgroundColor: (controller.amount.value == 1)
+                      backgroundColor: (controller.amount.value == 0)
                           ? const Color.fromARGB(135, 163, 163, 163)
                           : const Color.fromARGB(136, 58, 58, 58),
                       child: const Text(
@@ -308,17 +287,23 @@ class ProductPage extends GetView<ProductController> {
                     style: const TextStyle(color: primaryColor));
               }),
               spaceW(10),
-              GestureDetector(
-                onTap: () => controller.addAmount(),
-                child: const CircleAvatar(
-                  backgroundColor: Color.fromARGB(136, 58, 58, 58),
-                  child: Text(
-                    '+',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  radius: 10,
-                ),
-              ),
+              Obx(() => GestureDetector(
+                    onTap: () => controller.amount.value !=
+                            controller.productList[index].attributes!.stock
+                        ? controller.addAmount()
+                        : null,
+                    child: CircleAvatar(
+                      backgroundColor: (controller.amount.value ==
+                              controller.productList[index].attributes!.stock)
+                          ? const Color.fromARGB(135, 163, 163, 163)
+                          : const Color.fromARGB(136, 58, 58, 58),
+                      child: const Text(
+                        '+',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      radius: 10,
+                    ),
+                  )),
               spaceW(10),
               Text(
                   '${controller.productList[index].attributes!.stock} disponible',
@@ -329,12 +314,14 @@ class ProductPage extends GetView<ProductController> {
           SizedBox(
             height: 40,
             width: double.maxFinite,
-            child: ElevatedButton(
-              onPressed: controller.productList[index].attributes!.stock! > 0
-                  ? () => controller.addProductshop(index)
-                  : null,
-              child: const Text('Agregar'),
-            ),
+            child: Obx(() => ElevatedButton(
+                  onPressed:
+                      controller.productList[index].attributes!.stock! > 0 &&
+                              controller.amount > 0
+                          ? () => controller.addProductshop(index)
+                          : null,
+                  child: const Text('Agregar'),
+                )),
           )
         ],
       ),

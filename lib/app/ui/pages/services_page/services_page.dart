@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mecanicawinder/app/ui/theme/color.dart';
 import '../../../controllers/services_controller.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class ServicesPage extends GetView<ServicesController> {
   final _controller = Get.put(ServicesController());
@@ -145,7 +146,32 @@ class ServicesPage extends GetView<ServicesController> {
                                                       color: primaryColor,
                                                       width: 1,
                                                     )),
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  AwesomeDialog(
+                                                    context: context,
+                                                    dialogType:
+                                                        DialogType.QUESTION,
+                                                    animType:
+                                                        AnimType.BOTTOMSLIDE,
+                                                    title: 'Pedir servicio',
+                                                    desc:
+                                                        '¿Desea pedir el servicio ${controller.productList[index].attributes!.name}?',
+                                                    btnCancelOnPress: () {},
+                                                    btnOkOnPress: () => controller
+                                                        .fetchClientService(
+                                                            controller
+                                                                .productList[
+                                                                    index]
+                                                                .id!,
+                                                            controller
+                                                                .productList[
+                                                                    index]
+                                                                .attributes!
+                                                                .image!
+                                                                .data!
+                                                                .id!),
+                                                  ).show();
+                                                },
                                                 child: const SizedBox(
                                                   width: double.maxFinite,
                                                   child: Center(

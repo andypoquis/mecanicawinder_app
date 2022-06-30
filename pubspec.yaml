@@ -37,6 +37,7 @@ dependencies:
   fluttertoast: ^8.0.9
   carousel_slider: ^4.1.1
   uuid: 3.0.6
+  awesome_dialog: ^2.2.1
     # create pdf document
   pdf: ^3.1.0
 

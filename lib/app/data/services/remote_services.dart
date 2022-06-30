@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:mecanicawinder/app/data/models/client_Service.dart';
 import 'package:mecanicawinder/app/data/models/post_model.dart';
 import 'package:mecanicawinder/app/data/models/request_data/newuser_model.dart';
 import 'package:mecanicawinder/app/data/models/services_model.dart';
@@ -106,8 +107,6 @@ class RemoteServices {
       var jsonString = response.body;
       return servicesFromJson(jsonString);
     } else {
-      print(response.statusCode);
-      print(response.body);
       return null;
     }
   }
@@ -128,26 +127,23 @@ class RemoteServices {
   }
 
   static Future fetchVaucher(
-      String code, int pdf, String url, String token) async {
+      String code, int pdf, String url, int idClient, String token) async {
     Map<String, String> requestHeaders = {
       "Content-Type": "application/json; charset=utf-8",
       "Authorization": "Bearer $token"
     };
     var body = jsonEncode({
-      "data": {"code": code, "pdf": pdf}
+      "data": {"code": code, "pdf": pdf, "client": idClient}
     });
 
     var response =
         await client.post(Uri.parse(url), body: body, headers: requestHeaders);
 
     if (response.statusCode == 200) {
-      print("Todo correcto");
       var jsonString = response.body;
       return jsonString;
     } else {
       if (response.statusCode == 400) {
-        print(response.statusCode);
-        print(response.body);
         Fluttertoast.showToast(
             msg: "Error a procesar su pedido",
             toastLength: Toast.LENGTH_SHORT,
@@ -157,6 +153,59 @@ class RemoteServices {
             textColor: Colors.white,
             fontSize: 16.0);
       }
+      return null;
+    }
+  }
+
+  static Future fetchServiceClient(int idClient, int idService, int idImage,
+      String url, String token) async {
+    Map<String, String> requestHeaders = {
+      "Content-Type": "application/json; charset=utf-8",
+      "Authorization": "Bearer $token"
+    };
+    var body = jsonEncode({
+      "data": {
+        "client_service": idClient,
+        "state": 0,
+        "image": idImage,
+        "service": idService
+      }
+    });
+
+    var response =
+        await client.post(Uri.parse(url), body: body, headers: requestHeaders);
+
+    if (response.statusCode == 200) {
+      var jsonString = response.body;
+      return jsonString;
+    } else {
+      if (response.statusCode == 400) {
+        Fluttertoast.showToast(
+            msg: "Error a procesar su pedido",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: const Color(0xffF67878),
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+      return null;
+    }
+  }
+
+  static Future<ClientService?> fetchClientServices(
+      String url, String token) async {
+    Map<String, String> requestHeaders = {
+      "Content-Type": "application/json; charset=utf-8",
+      "Authorization": "Bearer $token"
+    };
+
+    var response = await client.get(Uri.parse(url), headers: requestHeaders);
+
+    if (response.statusCode == 200) {
+      var jsonString = response.body;
+      return clientServiceFromJson(jsonString);
+    } else {
       return null;
     }
   }
