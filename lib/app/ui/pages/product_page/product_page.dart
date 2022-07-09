@@ -22,9 +22,9 @@ class ProductPage extends GetView<ProductController> {
               Row(
                 children: [
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () => controller.navigationHistory(),
                       icon: const Icon(
-                        Icons.search,
+                        Icons.history,
                         color: primaryTextColor,
                       )),
                   Stack(

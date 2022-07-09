@@ -16,6 +16,8 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:http/http.dart' as http;
 
+import '../routes/app_pages.dart';
+
 class ProductController extends GetxController {
   RxList<ProductlistDatum> productList = RxList<ProductlistDatum>();
   RxBool isLoading = false.obs;
@@ -287,4 +289,8 @@ class ProductController extends GetxController {
   }
 
   Upload(File imageFile) async {}
+
+  void navigationHistory() {
+    Get.toNamed(Routes.HISTORY);
+  }
 }

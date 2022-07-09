@@ -9,7 +9,7 @@ class DetailProductPage extends GetView<ProductController> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-        backgroundColor: Color(0xffFDFBFF),
+        backgroundColor: const Color(0xffFDFBFF),
         bottomSheet: Container(
             height: size.height * 0.125,
             width: size.width,

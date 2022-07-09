@@ -13,4 +13,5 @@ abstract class Routes {
   static const DETAILPRODUCT = '/detailproduct';
   static const PROFILE_CLIENT = '/profileclient';
   static const REGISTER = '/register';
+  static const HISTORY = '/history';
 }

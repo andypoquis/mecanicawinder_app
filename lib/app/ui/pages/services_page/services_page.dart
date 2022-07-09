@@ -22,7 +22,7 @@ class ServicesPage extends GetView<ServicesController> {
                   IconButton(
                       onPressed: () {},
                       icon: const Icon(
-                        Icons.search,
+                        Icons.history,
                         color: primaryTextColor,
                       )),
                 ],

@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
+import 'package:mecanicawinder/app/bindings/history_binding.dart';
 import 'package:mecanicawinder/app/bindings/product_binding.dart';
 import 'package:mecanicawinder/app/bindings/profileclient_binding.dart';
 import 'package:mecanicawinder/app/bindings/register_binding.dart';
+import 'package:mecanicawinder/app/ui/pages/history_page/history_page.dart';
 import 'package:mecanicawinder/app/ui/pages/product_page/detail_product_page.dart';
 import 'package:mecanicawinder/app/ui/pages/profileclient_page/profileclient_page.dart';
 import 'package:mecanicawinder/app/ui/pages/register_page/register_page.dart';
@@ -40,6 +42,11 @@ abstract class AppPages {
       name: Routes.DETAILPRODUCT,
       page: () => DetailProductPage(),
       bindings: [ProductBinding()],
+    ),
+    GetPage(
+      name: Routes.HISTORY,
+      page: () => HistoryPage(),
+      bindings: [HistoryBinding()],
     ),
   ];
 }
